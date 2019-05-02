@@ -1,0 +1,4 @@
+1. Implement SearchByIngredientIntent
+2. Implement a script to populate the database
+3. Modify SurpriseMeIntent to work with the database
+4. Implement nice simple cards with the picture they sent us
