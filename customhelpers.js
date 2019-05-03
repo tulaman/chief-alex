@@ -44,8 +44,8 @@ module.exports = {
       } else {
         console.log('Get item succeeded', data);
 
-        var recipe = data.Items[0];
-        callback(recipe);
+        var recipes = data.Items.length > 5 ? data.Items.splice(0,5) : data.Items;
+        callback(recipes);
       }
     });
   }

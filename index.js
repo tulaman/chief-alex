@@ -138,7 +138,7 @@ const HelpIntentHandler = {
 	return handlerInput.responseBuilder
 	    .speak(speechText)
 	    .reprompt(speechText)
-      	    .withSimpleCard('Chief Alex', speechText)
+      	    .withSimpleCard('Chief Alex', 'You can say "surprise me" or "find me a receipt of something"')
 	    .getResponse();
     }
 }
@@ -154,7 +154,7 @@ const CancelAndStopIntentHandler = {
 
     return handlerInput.responseBuilder
       .speak(speechText)
-      .withSimpleCard('Chief Alex', speechText)
+      .withSimpleCard('Chief Alex', "Ok. Goodbye!")
       .getResponse();
   }
 };
@@ -365,7 +365,7 @@ const SearchByNameIntentHandler = {
           say += 'Okay. Let\’s make ' + r.name + '. Are you ready?';
 	      }
         else {
-          say += 'Sorry. I don\'t know how to cook that';
+          say += 'Sorry. I don\'t know how to cook ' + recipeName;
         }
         var speechText = '<voice name="Matthew">'+say+'</voice>';
         resolve(handlerInput.responseBuilder
@@ -397,12 +397,15 @@ const SearchByIngredientIntentHandler = {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
         var say = ''
-        if (r) {
+        if (r.length > 0) {
           sessionAttributes.mode = 'searchByIngredient';
-          sessionAttributes.lastRecipeId = r.id; 
-          sessionAttributes.lastRecipe = r;
-          sessionAttributes.step = -1;
-          say += 'Okay. Let\’s make ' + r.name + '. Are you ready?';
+//          sessionAttributes.lastRecipeId = r.id; 
+//          sessionAttributes.lastRecipe = r;
+//          sessionAttributes.step = -1;
+          //say += 'Okay. Let\’s make ' + r.name + '. Are you ready?';
+          const reducer = (accumulator, currentValue) => accumulator + ' <break time="600ms"/> ' + currentValue.name;
+          var recipes_list = r.reduce(reducer, '');
+          say += 'I have ' + recipes_list + ', what do you want to cook?';
         }
         else {
           say += 'Sorry. I don\'t know recipes with ' + ingredientName;
