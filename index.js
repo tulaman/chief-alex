@@ -409,8 +409,10 @@ const SearchByIngredientIntentHandler = {
           //say += 'Okay. Let\’s make ' + r.name + '. Are you ready?';
           const reducer = (accumulator, currentValue) => accumulator + ' <break time="600ms"/> ' + currentValue.name;
           const reducer1 = (accumulator, currentValue) => accumulator + ', ' + currentValue.name;
+          const reducer2 = (accumulator, currentValue) => accumulator + ' or ' + currentValue.name;
           var recipes_list = r.reduce(reducer, '');
           var clean_recipes_list = r.reduce(reducer1, '');
+          var alt_recipes_list = r.reduce(reducer2, '');
           say += 'I have ' + recipes_list + ', what do you want to cook?';
           show += 'I have ' + clean_recipes_list + ', what do you want to cook?';
         }
@@ -420,8 +422,8 @@ const SearchByIngredientIntentHandler = {
         var speechText = '<voice name="Matthew">'+say+'</voice>';
         resolve(handlerInput.responseBuilder
 	        .speak(speechText)
-	        .reprompt('Try again. ' + speechText)
-                .withStandardCard('Chief Alex', show, smallImageUrl, largeImageUrl)
+	        .reprompt('Say: I want to cook ' + alt_recipes_list)
+          .withStandardCard('Chief Alex', show, smallImageUrl, largeImageUrl)
 	        .getResponse()
         );
       });
