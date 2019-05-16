@@ -137,9 +137,9 @@ const HelpIntentHandler = {
 	       handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-	var pureText = 'You can say "surprise me" or "find me a receipt of something"';
+	var pureText = 'You can say "surprise me" or "find me a recipe of something"';
 	return handlerInput.responseBuilder
-	    .speak(voiced(pureText))
+	    .speak(customhelpers.voiced(pureText))
 	    .reprompt(pureText)
       	    .withStandardCard('Chief Alex', pureText,  smallImageUrl, largeImageUrl)
 	    .getResponse();
@@ -180,7 +180,7 @@ const SurpriseMeIntentHandler = {
       var pureText = 'Let\’s make ' + recipe.name + ' maybe?';
 	  
       return handlerInput.responseBuilder
-	      .speak(voiced(pureText))
+	      .speak(customhelpers.voiced(pureText))
 	      .reprompt(speechText)
               .withStandardCard('Chief Alex', pureText, smallImageUrl, largeImageUrl)
 	      .getResponse();
