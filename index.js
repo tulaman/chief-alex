@@ -298,13 +298,14 @@ const RepeatIntentHandler = {
     const attributesManager = handlerInput.attributesManager;
     const sa = attributesManager.getSessionAttributes();
   
+    var responseText = '';
     if (sa.lastSpeech)
       responseText = sa.lastSpeech;
     else
       responseText = 'Sorry. There is nothing to repeat';
 
     return handlerInput.responseBuilder
-      .speak('<voice name="' + voiceName + '">' + responseText + '</voice>')
+      .speak(customhelpers.voiced(responseText))
       .reprompt('You should say something')
       .getResponse();
   },
@@ -321,23 +322,26 @@ const NextIntentHandler = {
     const attributesManager = handlerInput.attributesManager;
     const sa = attributesManager.getSessionAttributes();
     
-    responseText = '';
+    var responseText = '';
+    var repromptText = '';
 
     if (sa.mode === 'surpriseMe') {
       if (sa.step >= 0 && sa.lastRecipe){
         if (sa.lastRecipe.steps[sa.step]) {
           responseText = sa.lastRecipe.steps[sa.step];
           sa.step = sa.step + 1;
+          repromptText = 'You should say Yes or Next or Cancel';
         }
         else {
           responseText = 'You are all done';
+          repromptText = 'Chief Alex is still here. You can get a recipe by ingredient or by name. Or I can surprise you';
         }
       }
     }
 
     return handlerInput.responseBuilder
       .speak('<voice name="' + voiceName + '">' + responseText + '</voice>')
-      .reprompt('You should say Yes or Next or Cancel')
+      .reprompt(repromptText)
       .getResponse();
   },
 };
