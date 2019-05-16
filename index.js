@@ -276,13 +276,13 @@ const NoIntentHandler = {
       sa.lastRecipe = recipe;
       sa.step = -1;
       
-      responseText = 'Okay. I\'ll find something better. ' +
+      var responseText = 'Okay. I\'ll find something better. ' +
         'How about ' + recipe.name + '?';
     }
 
     return handlerInput.responseBuilder
-      .speak('<voice name="' + voiceName + '">' + responseText + '</voice>')
-      .reprompt('You should say something')
+      .speak(customhelpers.voiced(responseText))
+      .reprompt('You should say Yes or No')
       .getResponse();
   },
 };
