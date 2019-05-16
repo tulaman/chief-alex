@@ -399,7 +399,8 @@ const SearchByIngredientIntentHandler = {
       customhelpers.getRecipeByIngredient(ingredientName, r => {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-        var say = ''
+        var say = '';
+        var show = '';
         if (r.length > 0) {
           sessionAttributes.mode = 'searchByIngredient';
 //          sessionAttributes.lastRecipeId = r.id; 
@@ -407,8 +408,11 @@ const SearchByIngredientIntentHandler = {
 //          sessionAttributes.step = -1;
           //say += 'Okay. Let\’s make ' + r.name + '. Are you ready?';
           const reducer = (accumulator, currentValue) => accumulator + ' <break time="600ms"/> ' + currentValue.name;
+          const reducer1 = (accumulator, currentValue) => accumulator + ', ' + currentValue.name;
           var recipes_list = r.reduce(reducer, '');
+          var clean_recipes_list = r.reduce(reducer1, '');
           say += 'I have ' + recipes_list + ', what do you want to cook?';
+          show += 'I have ' + clean_recipes_list + ', what do you want to cook?';
         }
         else {
           say += 'Sorry. I don\'t know recipes with ' + ingredientName;
@@ -417,7 +421,7 @@ const SearchByIngredientIntentHandler = {
         resolve(handlerInput.responseBuilder
 	        .speak(speechText)
 	        .reprompt('Try again. ' + speechText)
-                .withStandardCard('Chief Alex', say, smallImageUrl, largeImageUrl)
+                .withStandardCard('Chief Alex', show, smallImageUrl, largeImageUrl)
 	        .getResponse()
         );
       });
