@@ -435,6 +435,27 @@ const SearchByIngredientIntentHandler = {
   }
 };
 
+const CustomTestIntentHandler = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    return request.type === 'IntentRequest' && request.intent.name === 'CustomTestIntent';
+  },
+  handle(handlerInput) {
+    const responseBuilder = handlerInput.responseBuilder;
+    const attributesManager = handlerInput.attributesManager;
+    const sa = attributesManager.getSessionAttributes();
+  
+    var responseText = 'This is a custom test';
+    var repromptText = 'Try to test something';
+
+    return handlerInput.responseBuilder
+      .speak(customhelpers.voiced(responseText))
+      .reprompt(repromptText)
+      .getResponse();
+  },
+};
+
+
 exports.handler = Alexa.SkillBuilders.custom()
   .addRequestHandlers(
     LaunchRequestHandler,
@@ -447,6 +468,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     SessionEndedRequestHandler,
     SurpriseMeIntentHandler,
     SearchByNameIntentHandler,
-    SearchByIngredientIntentHandler)
+    SearchByIngredientIntentHandler,
+    CustomTestIntentHandler)
   .addErrorHandlers(ErrorHandler)
   .lambda();
