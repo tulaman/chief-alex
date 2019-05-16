@@ -9,6 +9,8 @@ const AWS = constants.AWS;
 const recipesTable = constants.DDB_TABLE;
 const voiceName = constants.VOICE;
 
+const smallImageUrl = 'https://s3.amazonaws.com/chief-alex/small-chief.jpg';
+const largeImageUrl = 'https://s3.amazonaws.com/chief-alex/large-chief.jpg';
 
 const recipes = [
   {
@@ -123,7 +125,7 @@ const LaunchRequestHandler = {
 	return handlerInput.responseBuilder
 	    .speak(speechText)
 	    .reprompt(speechText)
-      	    .withSimpleCard('Chief Alex', speechText)
+      	    .withStandardCard('Chief Alex', speechText, smallImageUrl, largeImageUrl)
 	    .getResponse();
     }
 }
@@ -138,7 +140,7 @@ const HelpIntentHandler = {
 	return handlerInput.responseBuilder
 	    .speak(speechText)
 	    .reprompt(speechText)
-      	    .withSimpleCard('Chief Alex', 'You can say "surprise me" or "find me a receipt of something"')
+      	    .withStandardCard('Chief Alex', 'You can say "surprise me" or "find me a receipt of something"', smallImageUrl, largeImageUrl)
 	    .getResponse();
     }
 }
@@ -154,7 +156,7 @@ const CancelAndStopIntentHandler = {
 
     return handlerInput.responseBuilder
       .speak(speechText)
-      .withSimpleCard('Chief Alex', "Ok. Goodbye!")
+      .withStandardCard('Chief Alex', "Ok. Goodbye!", smallImageUrl, largeImageUrl)
       .getResponse();
   }
 };
@@ -179,7 +181,7 @@ const SurpriseMeIntentHandler = {
       return handlerInput.responseBuilder
 	      .speak(speechText)
 	      .reprompt(speechText)
-      	.withSimpleCard('Chief Alex', speechText)
+      	.withStandardCard('Chief Alex', speechText, smallImageUrl, largeImageUrl)
 	      .getResponse();
     }
 }
@@ -371,7 +373,7 @@ const SearchByNameIntentHandler = {
         resolve(handlerInput.responseBuilder
 	        .speak(speechText)
 	        .reprompt('Try again. ' + speechText)
-      	  .withSimpleCard('Chief Alex', say)
+      	        .withStandardCard('Chief Alex', say, smallImageUrl, largeImageUrl)
 	        .getResponse()
         );
       });
@@ -414,7 +416,7 @@ const SearchByIngredientIntentHandler = {
         resolve(handlerInput.responseBuilder
 	        .speak(speechText)
 	        .reprompt('Try again. ' + speechText)
-                .withSimpleCard('Chief Alex', say)
+                .withStandardCard('Chief Alex', say, smallImageUrl, largeImageUrl)
 	        .getResponse()
         );
       });
