@@ -181,8 +181,8 @@ const SurpriseMeIntentHandler = {
 	  
       return handlerInput.responseBuilder
 	      .speak(customhelpers.voiced(pureText))
-	      .reprompt(speechText)
-              .withStandardCard('Chief Alex', pureText, smallImageUrl, largeImageUrl)
+	      .reprompt('Say "OK" if you want to cook ' + recipe.name)
+        .withStandardCard('Chief Alex', pureText, smallImageUrl, largeImageUrl)
 	      .getResponse();
     }
 }
