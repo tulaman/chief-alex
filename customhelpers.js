@@ -3,6 +3,9 @@ const AWS = constants.AWS;
 const recipesTable = constants.DYNAMODB_TABLE;
 
 module.exports = {
+  'voiced': function (txt) {
+    return '<voice name="Matthew">' + txt + '</voice>'; 
+  },
   'getRecipe': function (recipeName, callback) {
     var dynamoParams = {
       TableName: 'Recipes', //recipesTable,

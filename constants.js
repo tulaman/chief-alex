@@ -1,3 +1,5 @@
+'use strict';
+
 let AWS = require('aws-sdk');
 AWS.config.region = process.env.AWS_REGION || 'us-east-1';
 

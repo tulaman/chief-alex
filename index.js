@@ -121,11 +121,12 @@ const LaunchRequestHandler = {
 	return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
     handle(handlerInput) {
-	const speechText = '<voice name="Matthew">Hi. Chief Alex is here. You can get a receipt by ingredient or by name. Or I can surprise you</voice>';
+        var pureText = 'Hi. Chief Alex is here. You can get a recipe by ingredient or by name. Or I can surprise you';
+	var speechText = '<voice name="Matthew">' + pureText + '</voice>';
 	return handlerInput.responseBuilder
 	    .speak(speechText)
 	    .reprompt(speechText)
-      	    .withStandardCard('Chief Alex', speechText, smallImageUrl, largeImageUrl)
+      	    .withStandardCard('Chief Alex', pureText, smallImageUrl, largeImageUrl)
 	    .getResponse();
     }
 }
@@ -136,11 +137,11 @@ const HelpIntentHandler = {
 	       handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-	const speechText = '<voice name="Matthew">You can say "surprise me" or "find me a receipt of something"</voice>';
+	var pureText = 'You can say "surprise me" or "find me a receipt of something"';
 	return handlerInput.responseBuilder
-	    .speak(speechText)
-	    .reprompt(speechText)
-      	    .withStandardCard('Chief Alex', 'You can say "surprise me" or "find me a receipt of something"', smallImageUrl, largeImageUrl)
+	    .speak(voiced(pureText))
+	    .reprompt(pureText)
+      	    .withStandardCard('Chief Alex', pureText,  smallImageUrl, largeImageUrl)
 	    .getResponse();
     }
 }
@@ -176,12 +177,12 @@ const SurpriseMeIntentHandler = {
       sessionAttributes.lastRecipe = recipe;
       sessionAttributes.step = -1;
 
-	    const speechText = '<voice name="Matthew">Let\’s make ' + recipe.name + ' maybe?</voice>';
+      var pureText = 'Let\’s make ' + recipe.name + ' maybe?';
 	  
       return handlerInput.responseBuilder
-	      .speak(speechText)
+	      .speak(voiced(pureText))
 	      .reprompt(speechText)
-      	.withStandardCard('Chief Alex', speechText, smallImageUrl, largeImageUrl)
+              .withStandardCard('Chief Alex', pureText, smallImageUrl, largeImageUrl)
 	      .getResponse();
     }
 }
