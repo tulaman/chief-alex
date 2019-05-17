@@ -6,6 +6,16 @@ module.exports = {
   'voiced': function (txt) {
     return '<voice name="Matthew">' + txt + '</voice>'; 
   },
+  'supportsDisplay': function(handlerInput) { // returns true if the skill is running on a device with a display (Echo Show, Echo Spot, etc.)
+    const hasDisplay =                       //  Enable your skill for display as shown here: https://alexa.design/enabledisplay
+      handlerInput.requestEnvelope.context &&
+      handlerInput.requestEnvelope.context.System &&
+      handlerInput.requestEnvelope.context.System.device &&
+      handlerInput.requestEnvelope.context.System.device.supportedInterfaces &&
+      handlerInput.requestEnvelope.context.System.device.supportedInterfaces.Display;
+
+    return hasDisplay;
+  },
   'getRecipe': function (recipeName, callback) {
     var dynamoParams = {
       TableName: 'Recipes', //recipesTable,

@@ -4,6 +4,7 @@ const Alexa = require("ask-sdk");
 
 const constants    = require('./constants.js');
 const customhelpers = require('./customhelpers.js');
+let template = require('./main.json');
 
 const AWS = constants.AWS;
 const recipesTable = constants.DDB_TABLE;
@@ -11,6 +12,8 @@ const voiceName = constants.VOICE;
 
 const smallImageUrl = 'https://s3.amazonaws.com/chief-alex/small-chief.jpg';
 const largeImageUrl = 'https://s3.amazonaws.com/chief-alex/large-chief.jpg';
+
+const appName = 'Chief Alex';
 
 const recipes = [
   {
@@ -116,34 +119,66 @@ Array.prototype.random = function () {
   return this[Math.floor((Math.random()*this.length))];
 }
 
+
+function render(inputHandler, text) {
+  var responseBuilder = inputHandler.responseBuilder;
+  responseBuilder.withStandardCard(appName, text, smallImageUrl, largeImageUrl);
+
+  if (customhelpers.supportsDisplay(inputHandler)) {
+    const image = new Alexa.ImageHelper()
+      .addImageInstance(smallImageUrl)
+      .getImage();
+    const bgImage = new Alexa.ImageHelper()
+      .addImageInstance(largeImageUrl)
+      .getImage();
+    const title = appName;
+    const primaryText = new Alexa.RichTextContentHelper()
+      .withPrimaryText(text)
+      .getTextContent();
+    const bodyTemplate = 'BodyTemplate6';
+
+    responseBuilder.addRenderTemplateDirective({
+      type: bodyTemplate,
+      backButton: 'hidden',
+      backgroundImage: bgImage,
+      image,
+      title,
+      textContent: primaryText,
+    });
+  }
+
+  return responseBuilder;
+}
+
 const LaunchRequestHandler = {
-    canHandle(handlerInput) {
-	return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
-    },
-    handle(handlerInput) {
-        var pureText = 'Hi. Chief Alex is here. You can get a recipe by ingredient or by name. Or I can surprise you';
-	var speechText = '<voice name="Matthew">' + pureText + '</voice>';
-	return handlerInput.responseBuilder
-	    .speak(speechText)
-	    .reprompt(speechText)
-      	    .withStandardCard('Chief Alex', pureText, smallImageUrl, largeImageUrl)
+  canHandle(handlerInput) {
+	  return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
+  },
+  handle(handlerInput) {
+    var pureText = 'Hi. Chief Alex is here. You can get a recipe by ingredient or by name. Or I can surprise you';
+	  var speechText = '<voice name="Matthew">' + pureText + '</voice>';
+	  
+    var builder = render(handlerInput, pureText);
+    return builder
+	    .speak(customhelpers.voiced(pureText))
+	    .reprompt(customhelpers.voiced(pureText))
 	    .getResponse();
     }
 }
 
 const HelpIntentHandler = {
-    canHandle(handlerInput) {
-	return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
-	       handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
-    },
-    handle(handlerInput) {
-	var pureText = 'You can say "surprise me" or "find me a recipe of something"';
-	return handlerInput.responseBuilder
+  canHandle(handlerInput) {
+	  return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+	    handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+  },
+  handle(handlerInput) {
+	  var pureText = 'You can say "surprise me" or "find me a recipe of something"';
+    var builder = render(handlerInput, pureText);
+	  return builder
 	    .speak(customhelpers.voiced(pureText))
-	    .reprompt(pureText)
-      	    .withStandardCard('Chief Alex', pureText,  smallImageUrl, largeImageUrl)
+	    .reprompt(customhelpers.voiced(pureText))
 	    .getResponse();
-    }
+  }
 }
 
 const CancelAndStopIntentHandler = {
@@ -153,11 +188,10 @@ const CancelAndStopIntentHandler = {
         || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
   },
   handle(handlerInput) {
-    const speechText = '<voice name="Matthew">Ok. Goodbye!</voice>';
+    const pureText = 'Ok. Goodbye!';
 
     return handlerInput.responseBuilder
-      .speak(speechText)
-      .withStandardCard('Chief Alex', "Ok. Goodbye!", smallImageUrl, largeImageUrl)
+      .speak(customhelpers.voiced(speechText))
       .getResponse();
   }
 };
@@ -179,10 +213,10 @@ const SurpriseMeIntentHandler = {
 
       var pureText = 'Let\’s make ' + recipe.name + ' maybe?';
 	  
-      return handlerInput.responseBuilder
+      var builder = render(handlerInput, pureText);
+      return builder
 	      .speak(customhelpers.voiced(pureText))
 	      .reprompt('Say "OK" if you want to cook ' + recipe.name)
-        .withStandardCard('Chief Alex', pureText, smallImageUrl, largeImageUrl)
 	      .getResponse();
     }
 }
@@ -231,26 +265,31 @@ const YesIntentHandler = {
     const sa = attributesManager.getSessionAttributes();
     
     var responseText = 'OK';
+    var pureText = '';
 
     if (sa.step < 0 && sa.lastRecipe) {
       var r = sa.lastRecipe;
       responseText = 'To make ' + r.name + ' you need the following ingredients. ' + r.ingredients.join(' <break time="600ms"/> ') + '. Are you ready to make it?';
+      pureText = 'To make ' + r.name + ' you need the following ingredients. ' + r.ingredients.join(', ') + '. Are you ready to make it?';
       sa.step = 0;
     }
     else if (sa.step >= 0 && sa.lastRecipe){
       if (sa.lastRecipe.steps[sa.step]) {
         responseText = sa.lastRecipe.steps[sa.step];
+        pureText = sa.lastRecipe.steps[sa.step];
         sa.step = sa.step + 1;
       }
       else {
         responseText = 'You are all done';
+        pureText = 'You are all done';
       }
     }
 
     sa.lastSpeech = responseText;
 
-    return handlerInput.responseBuilder
-      .speak('<voice name="' + voiceName + '">' + responseText + '</voice>')
+    var builder = render(handlerInput, pureText);
+    return builder
+      .speak(customhelpers.voiced(responseText))
       .reprompt('You should say Yes or Next or Cancel')
       .getResponse();
   },
@@ -325,7 +364,7 @@ const NextIntentHandler = {
     var responseText = '';
     var repromptText = '';
 
-    if (sa.mode === 'surpriseMe') {
+    if (sa.mode === 'surpriseMe' || sa.mode === 'searchByName' || sa.mode === 'searchByIngredient') {
       if (sa.step >= 0 && sa.lastRecipe){
         if (sa.lastRecipe.steps[sa.step]) {
           responseText = sa.lastRecipe.steps[sa.step];
@@ -339,8 +378,9 @@ const NextIntentHandler = {
       }
     }
 
-    return handlerInput.responseBuilder
-      .speak('<voice name="' + voiceName + '">' + responseText + '</voice>')
+    var builder = render(handlerInput, responseText);
+    return builder
+      .speak(customhelpers.voiced(responseText))
       .reprompt(repromptText)
       .getResponse();
   },
@@ -374,11 +414,10 @@ const SearchByNameIntentHandler = {
         else {
           say += 'Sorry. I don\'t know how to cook ' + recipeName;
         }
-        var speechText = '<voice name="Matthew">'+say+'</voice>';
-        resolve(handlerInput.responseBuilder
+        var speechText = customhelpers.voiced(say);
+        resolve(render(handlerInput, say)
 	        .speak(speechText)
 	        .reprompt('Try again. ' + speechText)
-      	        .withStandardCard('Chief Alex', say, smallImageUrl, largeImageUrl)
 	        .getResponse()
         );
       });
@@ -423,8 +462,8 @@ const SearchByIngredientIntentHandler = {
         else {
           say += 'Sorry. I don\'t know recipes with ' + ingredientName;
         }
-        var speechText = '<voice name="Matthew">'+say+'</voice>';
-        resolve(handlerInput.responseBuilder
+        var speechText = customhelpers.voiced(say);
+        resolve(render(handlerInput, show)
 	        .speak(speechText)
 	        .reprompt('Say: I want to cook ' + alt_recipes_list)
           .withStandardCard('Chief Alex', show, smallImageUrl, largeImageUrl)
@@ -442,13 +481,36 @@ const CustomTestIntentHandler = {
   },
   handle(handlerInput) {
     const responseBuilder = handlerInput.responseBuilder;
-    const attributesManager = handlerInput.attributesManager;
-    const sa = attributesManager.getSessionAttributes();
   
     var responseText = 'This is a custom test';
     var repromptText = 'Try to test something';
 
-    return handlerInput.responseBuilder
+    responseBuilder.withStandardCard('Chief Alex', responseText, smallImageUrl, largeImageUrl);
+
+    if (customhelpers.supportsDisplay(handlerInput)) {
+      const image = new Alexa.ImageHelper()
+        .addImageInstance(smallImageUrl)
+        .getImage();
+      const bgImage = new Alexa.ImageHelper()
+        .addImageInstance(largeImageUrl)
+        .getImage();
+      const title = 'Chief Alex';
+      const primaryText = new Alexa.RichTextContentHelper()
+        .withPrimaryText(responseText)
+        .getTextContent();
+      const bodyTemplate = 'BodyTemplate6';
+
+      responseBuilder.addRenderTemplateDirective({
+        type: bodyTemplate,
+        backButton: 'visible',
+        backgroundImage: bgImage,
+        image,
+        title,
+        textContent: primaryText,
+      });
+    }
+
+    return responseBuilder
       .speak(customhelpers.voiced(responseText))
       .reprompt(repromptText)
       .getResponse();
