@@ -4,7 +4,6 @@ const Alexa = require("ask-sdk");
 
 const constants    = require('./constants.js');
 const customhelpers = require('./customhelpers.js');
-let template = require('./main.json');
 
 const AWS = constants.AWS;
 const recipesTable = constants.DDB_TABLE;
