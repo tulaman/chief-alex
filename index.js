@@ -278,6 +278,8 @@ const YesIntentHandler = {
         responseText = sa.lastRecipe.steps[sa.step];
         pureText = sa.lastRecipe.steps[sa.step];
         sa.step = sa.step + 1;
+        // add audio
+        responseText = responseText + '<break time="3s"/><audio src="https://s3.amazonaws.com/chief-alex/2.mp3"/>'
       }
       else {
         responseText = 'You are all done';
@@ -370,6 +372,8 @@ const NextIntentHandler = {
           responseText = sa.lastRecipe.steps[sa.step];
           sa.step = sa.step + 1;
           repromptText = 'You should say Yes or Next or Cancel';
+          // add audio
+          responseText = responseText + '<break time="3s"/><audio src="https://s3.amazonaws.com/chief-alex/2.mp3"/>'
         }
         else {
           responseText = 'You are all done';
