@@ -278,7 +278,7 @@ const YesIntentHandler = {
         pureText = sa.lastRecipe.steps[sa.step];
         sa.step = sa.step + 1;
         // add audio
-        responseText = responseText + '<break time="3s"/><audio src="https://s3.amazonaws.com/chief-alex/2.mp3"/>'
+        responseText = responseText + '<break time="3s"/>Take your time. Say Next when you\'ll be ready <audio src="https://s3.amazonaws.com/chief-alex/2.mp3"/>'
       }
       else {
         responseText = 'You are all done';
@@ -364,19 +364,22 @@ const NextIntentHandler = {
     const attributesManager = handlerInput.attributesManager;
     const sa = attributesManager.getSessionAttributes();
     
+    var pureText = '';
     var responseText = '';
     var repromptText = '';
 
     if (sa.mode === 'surpriseMe' || sa.mode === 'searchByName' || sa.mode === 'searchByIngredient') {
       if (sa.step >= 0 && sa.lastRecipe){
         if (sa.lastRecipe.steps[sa.step]) {
+          pureText = sa.lastRecipe.steps[sa.step];
           responseText = sa.lastRecipe.steps[sa.step];
           sa.step = sa.step + 1;
           repromptText = 'You should say Yes or Next or Cancel';
           // add audio
-          responseText = responseText + '<break time="3s"/><audio src="https://s3.amazonaws.com/chief-alex/2.mp3"/>'
+          responseText = responseText + '<break time="3s"/>Take your time. Say "Next" when you\'ll be ready <audio src="https://s3.amazonaws.com/chief-alex/2.mp3"/>'
         }
         else {
+          pureText = 'You are all done';
           responseText = 'You are all done';
           repromptText = 'Chief Alex is still here. You can get a recipe by ingredient or by name. Or I can surprise you';
           // add short audio
@@ -385,7 +388,7 @@ const NextIntentHandler = {
       }
     }
 
-    var builder = render(handlerInput, responseText);
+    var builder = render(handlerInput, pureText);
     return builder
       .speak(customhelpers.voiced(responseText))
       .reprompt(repromptText)
