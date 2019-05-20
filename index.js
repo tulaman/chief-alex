@@ -388,6 +388,8 @@ const NextIntentHandler = {
       }
     }
 
+    sa.lastSpeech = responseText;
+
     var builder = render(handlerInput, pureText);
     return builder
       .speak(customhelpers.voiced(responseText))
