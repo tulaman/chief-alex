@@ -284,6 +284,8 @@ const YesIntentHandler = {
       else {
         responseText = 'You are all done';
         pureText = 'You are all done';
+        // add short audio
+        responseText = "<audio src='soundbank://soundlibrary/musical/amzn_sfx_bell_timer_01'/>" + responseText;
       }
     }
 
@@ -378,6 +380,8 @@ const NextIntentHandler = {
         else {
           responseText = 'You are all done';
           repromptText = 'Chief Alex is still here. You can get a recipe by ingredient or by name. Or I can surprise you';
+          // add short audio
+          responseText = "<audio src='soundbank://soundlibrary/musical/amzn_sfx_bell_timer_01'/>" + responseText;
         }
       }
     }
