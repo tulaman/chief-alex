@@ -447,7 +447,7 @@ const YesIntentHandler = {
     if (sa.step < 0 && sa.lastRecipe) {
       var r = sa.lastRecipe;
       responseText = 'To make ' + r.name + ' you need the following ingredients. ' + r.ingredients.join(' <break time="600ms"/> ') + '. Are you ready to make it?';
-      pureText = 'To make ' + r.name + ' you need the following ingredients. ' + r.ingredients.join(', ') + '. Are you ready to make it?';
+      pureText = 'Ingredients: ' + r.ingredients.join(', ');
       sa.step = 0;
     }
     else if (sa.step >= 0 && sa.lastRecipe){
