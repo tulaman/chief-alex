@@ -331,7 +331,7 @@ const LaunchRequestHandler = {
 	  return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    var pureText = 'Hi. Chief Alex is here. You can get a recipe by ingredient or by name. Or I can surprise you';
+    var pureText = 'Hi. Chef Alex is here. You can get a recipe by ingredient or by name. Or I can surprise you';
 	  var speechText = '<voice name="Matthew">' + pureText + '</voice>';
 	  
     var builder = render(handlerInput, pureText);
@@ -570,7 +570,7 @@ const NextIntentHandler = {
         else {
           pureText = 'You are all done';
           responseText = 'You are all done';
-          repromptText = 'Chief Alex is still here. You can get a recipe by ingredient or by name. Or I can surprise you';
+          repromptText = 'Chef Alex is still here. You can get a recipe by ingredient or by name. Or I can surprise you';
           // add short audio
           responseText = "<audio src='soundbank://soundlibrary/musical/amzn_sfx_bell_timer_01'/>" + responseText;
         }
@@ -667,7 +667,7 @@ const SearchByIngredientIntentHandler = {
         resolve(render(handlerInput, show)
 	        .speak(speechText)
 	        .reprompt('Say: I want to cook ' + alt_recipes_list)
-          .withStandardCard('Chief Alex', show, smallImageUrl, largeImageUrl)
+          .withStandardCard('Chef Alex', show, smallImageUrl, largeImageUrl)
 	        .getResponse()
         );
       });
@@ -686,7 +686,7 @@ const CustomTestIntentHandler = {
     var responseText = 'This is a custom test';
     var repromptText = 'Try to test something';
 
-    responseBuilder.withStandardCard('Chief Alex', responseText, smallImageUrl, largeImageUrl);
+    responseBuilder.withStandardCard('Chef Alex', responseText, smallImageUrl, largeImageUrl);
 
     if (customhelpers.supportsDisplay(handlerInput)) {
       const image = new Alexa.ImageHelper()
@@ -695,7 +695,7 @@ const CustomTestIntentHandler = {
       const bgImage = new Alexa.ImageHelper()
         .addImageInstance(largeImageUrl)
         .getImage();
-      const title = 'Chief Alex';
+      const title = 'Chef Alex';
       const primaryText = new Alexa.RichTextContentHelper()
         .withPrimaryText(responseText)
         .getTextContent();
