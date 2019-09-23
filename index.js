@@ -447,7 +447,7 @@ const YesIntentHandler = {
     if (sa.step < 0 && sa.lastRecipe) {
       var r = sa.lastRecipe;
       responseText = 'To make ' + r.name + ' you need the following ingredients. ' + r.ingredients.join(' <break time="600ms"/> ') + '. Are you ready to make it?';
-      pureText = 'Ingredients: ' + r.ingredients.join(', ');
+      pureText = 'Ingredients: ' + r.ingredients.join(",\n");
       sa.step = 0;
     }
     else if (sa.step >= 0 && sa.lastRecipe){
@@ -520,10 +520,20 @@ const RepeatIntentHandler = {
     const sa = attributesManager.getSessionAttributes();
   
     var responseText = '';
-    if (sa.lastSpeech)
-      responseText = sa.lastSpeech;
-    else
-      responseText = 'Sorry. There is nothing to repeat';
+
+    if (sa.mode === 'surpriseMe' || sa.mode === 'searchByName' || sa.mode === 'searchByIngredient') {
+      if (sa.step == 0 && sa.lastRecipe) { // repeat ingredients
+        var r = sa.lastRecipe;
+        responseText = 'To make ' + r.name + ' you need the following ingredients. ' + r.ingredients.join(' <break time="600ms"/> ') + '. Are you ready to make it?';
+        pureText = 'Ingredients: ' + r.ingredients.join(",\n");
+      }
+      else { // repeat the last step 
+        if (sa.lastSpeech)
+          responseText = sa.lastSpeech;
+        else
+          responseText = 'Sorry. There is nothing to repeat';
+      }
+    }
 
     return handlerInput.responseBuilder
       .speak(customhelpers.voiced(responseText))
