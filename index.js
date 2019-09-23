@@ -12,7 +12,7 @@ const voiceName = constants.VOICE;
 const smallImageUrl = 'https://s3.amazonaws.com/chief-alex/small-chief.jpg';
 const largeImageUrl = 'https://s3.amazonaws.com/chief-alex/large-chief.jpg';
 
-const appName = 'Chief Alex';
+const appName = 'Chef Alex';
 
 const recipes = [
 {
@@ -447,7 +447,7 @@ const YesIntentHandler = {
     if (sa.step < 0 && sa.lastRecipe) {
       var r = sa.lastRecipe;
       responseText = 'To make ' + r.name + ' you need the following ingredients. ' + r.ingredients.join(' <break time="600ms"/> ') + '. Are you ready to make it?';
-      pureText = 'Ingredients: ' + r.ingredients.join(",\n");
+      pureText = "Ingredients:\n" + r.ingredients.join(",\n");
       sa.step = 0;
     }
     else if (sa.step >= 0 && sa.lastRecipe){
@@ -522,10 +522,10 @@ const RepeatIntentHandler = {
     var responseText = '';
 
     if (sa.mode === 'surpriseMe' || sa.mode === 'searchByName' || sa.mode === 'searchByIngredient') {
-      if (sa.step == 0 && sa.lastRecipe) { // repeat ingredients
+      if (sa.step == -1 && sa.lastRecipe) { // repeat ingredients
         var r = sa.lastRecipe;
         responseText = 'To make ' + r.name + ' you need the following ingredients. ' + r.ingredients.join(' <break time="600ms"/> ') + '. Are you ready to make it?';
-        pureText = 'Ingredients: ' + r.ingredients.join(",\n");
+        pureText = "Ingredients:\n" + r.ingredients.join(",\n");
       }
       else { // repeat the last step 
         if (sa.lastSpeech)
