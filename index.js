@@ -456,7 +456,7 @@ const YesIntentHandler = {
         pureText = "Step " + (sa.step+1) + " of " + sa.lastRecipe.steps.length + "\n" + sa.lastRecipe.steps[sa.step];
         sa.step = sa.step + 1;
         // add audio
-        responseText = responseText + '<break time="3s"/> Take your time. When you\'ll be ready, say "Alexa, Next!" <audio src="https://s3.amazonaws.com/chief-alex/2.mp3"/> Repeat or Next?'
+        responseText = responseText + '<break time="3s"/> Take your time. When you\'ll be ready, say "Alexa, Next!" <audio src="https://chief-alex.s3.amazonaws.com/1-minute-of-silence.mp3"/> Repeat or Next?'
         repromptText = 'say "Repeat" or "Next"';
       }
       else {
@@ -554,7 +554,7 @@ const NextIntentHandler = {
           responseText = sa.lastRecipe.steps[sa.step];
           sa.step = sa.step + 1;
           // add audio
-          responseText = responseText + '<break time="3s"/> Take your time. When you\'ll be ready, say "Alexa, Next!" <audio src="https://s3.amazonaws.com/chief-alex/2.mp3"/> Repeat or Next?'
+          responseText = responseText + '<break time="3s"/> Take your time. When you\'ll be ready, say "Alexa, Next!" <audio src="https://chief-alex.s3.amazonaws.com/1-minute-of-silence.mp3"/> Repeat or Next?'
           repromptText = 'say "Repeat" or "Next"';
         }
         else {
