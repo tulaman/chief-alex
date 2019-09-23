@@ -453,7 +453,7 @@ const YesIntentHandler = {
     else if (sa.step >= 0 && sa.lastRecipe){
       if (sa.lastRecipe.steps[sa.step]) {
         responseText = sa.lastRecipe.steps[sa.step];
-        pureText = sa.lastRecipe.steps[sa.step];
+        pureText = "Step " + (sa.step+1) + " of " + sa.lastRecipe.steps.length + "\n" + sa.lastRecipe.steps[sa.step];
         sa.step = sa.step + 1;
         // add audio
         responseText = responseText + '<break time="3s"/> Take your time. When you\'ll be ready, say "Alexa, Next!" <audio src="https://s3.amazonaws.com/chief-alex/2.mp3"/> Repeat or Next?'
@@ -550,7 +550,7 @@ const NextIntentHandler = {
     if (sa.mode === 'surpriseMe' || sa.mode === 'searchByName' || sa.mode === 'searchByIngredient') {
       if (sa.step >= 0 && sa.lastRecipe){
         if (sa.lastRecipe.steps[sa.step]) {
-          pureText = sa.lastRecipe.steps[sa.step];
+          pureText = "Step " + (sa.step+1) + " of " + sa.lastRecipe.steps.length + "\n" + sa.lastRecipe.steps[sa.step];
           responseText = sa.lastRecipe.steps[sa.step];
           sa.step = sa.step + 1;
           // add audio
