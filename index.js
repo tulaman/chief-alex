@@ -719,6 +719,40 @@ const CustomTestIntentHandler = {
 };
 
 
+const StartOverIntentHandler = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.StartOverIntent';
+  },
+  handle(handlerInput) {
+    const responseBuilder = handlerInput.responseBuilder;
+    const attributesManager = handlerInput.attributesManager;
+    const sa = attributesManager.getSessionAttributes();
+    
+    var pureText = '';
+    var responseText = '';
+    var repromptText = 'say "Yes", "No" or "Cancel"';
+    
+    if (sa.mode === 'surpriseMe' || sa.mode === 'searchByName' || sa.mode === 'searchByIngredient') {
+      if (sa.step >= 0 && sa.lastRecipe){
+          sa.step = 0;
+          pureText = "Step " + (sa.step+1) + " of " + sa.lastRecipe.steps.length + "\n" + sa.lastRecipe.steps[sa.step];
+          responseText = sa.lastRecipe.steps[sa.step];
+          sa.step = sa.step + 1;
+          // add audio
+          responseText = responseText + '<break time="3s"/> Take your time. When you\'ll be ready, say "Alexa, Next!" <audio src="https://chief-alex.s3.amazonaws.com/1-minute-of-silence.mp3"/> Repeat or Next?';
+          repromptText = 'say "Repeat" or "Next"';
+      }
+    }
+
+    var builder = render(handlerInput, pureText);
+    return builder
+      .speak(customhelpers.voiced(responseText))
+      .reprompt(repromptText)
+      .getResponse();
+  }
+};
+
 exports.handler = Alexa.SkillBuilders.custom()
   .addRequestHandlers(
     LaunchRequestHandler,
@@ -732,6 +766,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     SurpriseMeIntentHandler,
     SearchByNameIntentHandler,
     SearchByIngredientIntentHandler,
-    CustomTestIntentHandler)
+    CustomTestIntentHandler,
+    StartOverIntentHandler)
   .addErrorHandlers(ErrorHandler)
   .lambda();
