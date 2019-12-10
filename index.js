@@ -613,7 +613,7 @@ const SearchByNameIntentHandler = {
           say += 'Okay. Let\’s make ' + r.name + '. Are you ready?';
 	      }
         else {
-          say += 'Sorry. I don\'t know how to cook ' + recipeName;
+          say += 'Sorry. I don\'t know how to cook ' + recipeName + '. Try something else';
         }
         var speechText = customhelpers.voiced(say);
         resolve(render(handlerInput, say)
@@ -661,7 +661,7 @@ const SearchByIngredientIntentHandler = {
           show += 'I have ' + clean_recipes_list + ', what do you want to cook?';
         }
         else {
-          say += 'Sorry. I don\'t know recipes with ' + ingredientName;
+          say += 'Sorry. I don\'t know recipes with ' + ingredientName + '. Try something else';
         }
         var speechText = customhelpers.voiced(say);
         resolve(render(handlerInput, show)
