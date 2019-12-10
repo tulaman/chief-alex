@@ -443,6 +443,7 @@ const YesIntentHandler = {
     var responseText = 'OK';
     var pureText = '';
     var repromptText = 'say "Yes", "No" or "Cancel"';
+    var shouldEndSession = false;
 
     if (sa.step < 0 && sa.lastRecipe) {
       var r = sa.lastRecipe;
@@ -462,6 +463,7 @@ const YesIntentHandler = {
       else {
         responseText = 'You are all done';
         pureText = 'You are all done';
+        shouldEndSession = true;
         // add short audio
         responseText = responseText + "<audio src='soundbank://soundlibrary/musical/amzn_sfx_bell_timer_01'/>";
       }
@@ -473,6 +475,7 @@ const YesIntentHandler = {
     return builder
       .speak(customhelpers.voiced(responseText))
       .reprompt(repromptText)
+      .withShouldEndSession(shouldEndSession)
       .getResponse();
   },
 };
@@ -597,6 +600,7 @@ const SearchByNameIntentHandler = {
     const request = handlerInput.requestEnvelope.request;
     const slots = request.intent.slots;
     let recipeName = slots.RecipeName.value;
+    var shouldEndSession = false;
 
     console.log('Attempting to read data');
 
@@ -614,11 +618,13 @@ const SearchByNameIntentHandler = {
 	      }
         else {
           say += 'Sorry. I don\'t know how to cook ' + recipeName + '. Try something else';
+          shouldEndSession = true;
         }
         var speechText = customhelpers.voiced(say);
         resolve(render(handlerInput, say)
 	        .speak(speechText)
 	        .reprompt('Try again. ' + speechText)
+          .withShouldEndSession(shouldEndSession)
 	        .getResponse()
         );
       });
@@ -645,6 +651,7 @@ const SearchByIngredientIntentHandler = {
 
         var say = '';
         var show = '';
+        var shouldEndSession = false;
         if (r.length > 0) {
           sessionAttributes.mode = 'searchByIngredient';
 //          sessionAttributes.lastRecipeId = r.id; 
@@ -662,12 +669,14 @@ const SearchByIngredientIntentHandler = {
         }
         else {
           say += 'Sorry. I don\'t know recipes with ' + ingredientName + '. Try something else';
+          shouldEndSession = true;
         }
         var speechText = customhelpers.voiced(say);
         resolve(render(handlerInput, show)
 	        .speak(speechText)
 	        .reprompt('Say: I want to cook ' + alt_recipes_list)
           .withStandardCard('Chef Alex', show, smallImageUrl, largeImageUrl)
+          .withShouldEndSession(shouldEndSession)
 	        .getResponse()
         );
       });
