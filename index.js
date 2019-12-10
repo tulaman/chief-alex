@@ -559,6 +559,7 @@ const NextIntentHandler = {
     var pureText = '';
     var responseText = '';
     var repromptText = 'say "Yes", "No" or "Cancel"';
+    var shouldEndSession = false;
 
     if (sa.mode === 'surpriseMe' || sa.mode === 'searchByName' || sa.mode === 'searchByIngredient') {
       if (sa.step >= 0 && sa.lastRecipe){
@@ -573,7 +574,8 @@ const NextIntentHandler = {
         else {
           pureText = 'You are all done';
           responseText = 'You are all done';
-          repromptText = 'Chef Alex is still here. You can get a recipe by ingredient or by name. Or I can surprise you';
+          //repromptText = 'Chef Alex is still here. You can get a recipe by ingredient or by name. Or I can surprise you';
+          shouldEndSession = true;
           // add short audio
           responseText = "<audio src='soundbank://soundlibrary/musical/amzn_sfx_bell_timer_01'/>" + responseText;
         }
@@ -586,6 +588,7 @@ const NextIntentHandler = {
     return builder
       .speak(customhelpers.voiced(responseText))
       .reprompt(repromptText)
+      .withShouldEndSession(shouldEndSession)
       .getResponse();
   },
 };
